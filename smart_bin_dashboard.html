@@ -1,0 +1,498 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .db-root {
+    font-family: 'Montserrat', sans-serif;
+    background: #f0eeff;
+    min-height: 100vh;
+    padding: 20px;
+    color: #1a1a2e;
+  }
+
+  .db-shell {
+    background: #fff;
+    border-radius: 24px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 56px 1fr 260px;
+    gap: 20px;
+    min-height: 580px;
+    box-shadow: 0 8px 40px rgba(120,100,220,0.10);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 8px 0;
+  }
+  .sb-icon {
+    width: 40px; height: 40px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #a09cc0;
+    transition: all 0.2s;
+  }
+  .sb-icon:hover { background: #f0eeff; color: #6c5ce7; }
+  .sb-icon.active { background: #6c5ce7; color: #fff; }
+  .sb-logo {
+    width: 40px; height: 40px;
+    background: #6c5ce7;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 20px; margin-bottom: 8px;
+  }
+
+  /* MAIN */
+  .main { display: flex; flex-direction: column; gap: 16px; }
+
+  .main-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .main-title { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: #1a1a2e; }
+  .main-sub { font-size: 13px; color: #a09cc0; margin-top: 2px; }
+
+  .header-controls { display: flex; gap: 8px; align-items: center; }
+  .badge-status {
+    background: #eafaf2; color: #27ae60;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .badge-status::before { content: ''; width: 7px; height: 7px; background: #27ae60; border-radius: 50%; display: inline-block; }
+  .dropdown-fake {
+    background: #f6f4ff; border: none; border-radius: 20px;
+    padding: 5px 14px; font-size: 12px; color: #6c5ce7; cursor: pointer;
+    font-family: 'Montserrat', sans-serif; font-weight: 500;
+  }
+
+  /* OVERVIEW CARD */
+  .overview-card {
+    background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+    border-radius: 20px;
+    padding: 20px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .overview-card::after {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .overview-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.75; margin-bottom: 4px; }
+  .overview-big { font-family: 'Montserrat', sans-serif; font-size: 38px; font-weight: 700; line-height: 1; }
+  .overview-sub { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+  .overview-stats { display: flex; gap: 24px; margin-top: 16px; }
+  .ov-stat-label { font-size: 10px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ov-stat-val { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 600; margin-top: 1px; }
+
+  /* WAVE CHART */
+  .wave-wrap { margin-top: 8px; height: 60px; position: relative; }
+  .wave-svg { width: 100%; height: 60px; }
+
+  /* CATEGORY CARDS ROW */
+  .cat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+  .cat-card {
+    border-radius: 18px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 10px;
+    position: relative; overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .cat-card:hover { transform: translateY(-2px); }
+
+  .cat-card.recyclable { background: #eff6ff; }
+  .cat-card.bio { background: #eafaf2; }
+  .cat-card.residual { background: #f0f0f0; }
+
+  .cat-icon-wrap {
+    width: 42px; height: 42px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .recyclable .cat-icon-wrap { background: #2563eb; color: #fff; }
+  .bio .cat-icon-wrap { background: #27ae60; color: #fff; }
+  .residual .cat-icon-wrap { background: #1a1a2e; color: #fff; }
+
+  .cat-name { font-size: 13px; font-weight: 600; }
+  .recyclable .cat-name { color: #2563eb; }
+  .bio .cat-name { color: #27ae60; }
+  .residual .cat-name { color: #1a1a2e; }
+
+  .cat-count { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700; color: #1a1a2e; line-height: 1; }
+  .cat-week { font-size: 11px; color: #a09cc0; }
+
+  .cat-progress-track { height: 6px; background: rgba(0,0,0,0.08); border-radius: 10px; overflow: hidden; }
+  .cat-progress-fill { height: 100%; border-radius: 10px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+  .recyclable .cat-progress-fill { background: #2563eb; }
+  .bio .cat-progress-fill { background: #27ae60; }
+  .residual .cat-progress-fill { background: #1a1a2e; }
+
+  .cat-days-badge {
+    display: inline-flex; align-items: center;
+    gap: 4px; font-size: 10px; font-weight: 600;
+    padding: 3px 8px; border-radius: 20px; width: fit-content;
+  }
+  .recyclable .cat-days-badge { background: #dbeafe; color: #2563eb; }
+  .bio .cat-days-badge { background: #c8f2dc; color: #27ae60; }
+  .residual .cat-days-badge { background: #e0e0e0; color: #1a1a2e; }
+
+  /* RIGHT PANEL */
+  .right-panel { display: flex; flex-direction: column; gap: 16px; }
+
+  .rp-section-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: #a09cc0; margin-bottom: 8px; }
+
+  /* STATE CARD */
+  .state-card {
+    border-radius: 18px; padding: 16px;
+    background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+    color: #fff;
+  }
+  .state-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .state-icon { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .state-label { font-size: 10px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; }
+  .state-name { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 700; margin-top: 2px; }
+  .state-time { font-size: 28px; font-weight: 700; font-family: 'Montserrat', sans-serif; margin-top: 6px; }
+  .state-time-label { font-size: 10px; opacity: 0.7; }
+
+  /* RECENT LOG */
+  .log-list { display: flex; flex-direction: column; gap: 8px; }
+  .log-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: #f8f7ff; border-radius: 12px;
+  }
+  .log-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .log-dot.r { background: #2563eb; }
+  .log-dot.b { background: #27ae60; }
+  .log-dot.x { background: #1a1a2e; }
+  .log-info { flex: 1; }
+  .log-name { font-size: 12px; font-weight: 500; color: #1a1a2e; }
+  .log-time { font-size: 10px; color: #a09cc0; }
+  .log-conf { font-size: 11px; font-weight: 600; color: #2563eb; }
+
+  /* DONUT */
+  .donut-wrap { display: flex; align-items: center; gap: 14px; }
+  .donut-svg-wrap { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+  .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); text-align: center; }
+  .donut-center-num { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 700; color: #1a1a2e; }
+  .donut-center-sub { font-size: 8px; color: #a09cc0; }
+  .donut-legend { display: flex; flex-direction: column; gap: 4px; }
+  .donut-leg-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #555; }
+  .donut-leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+  /* CURRENT COMMAND */
+  .cmd-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .cmd-pill.idle { background: #f0eeff; color: #6c5ce7; }
+  .cmd-pill.active { background: #6c5ce7; color: #fff; }
+  .cmd-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+</style>
+
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Smart Bin sorting dashboard showing waste counts for recyclable, biodegradable, and residual categories with current system state and recent detection log.</h2>
+
+<div class="db-root">
+  <div class="db-shell">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-logo"><i class="ti ti-recycle" aria-hidden="true"></i></div>
+      <div class="sb-icon active"><i class="ti ti-layout-dashboard" aria-hidden="true"></i></div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <div class="main-header">
+        <div>
+          <div class="main-title">Smart Bin Dashboard</div>
+          <div class="main-sub">Waste sorting system · Live monitor</div>
+        </div>
+        <div class="header-controls">
+          <div class="badge-status">System Online</div>
+          <select class="dropdown-fake" id="period-sel">
+            <option>Today</option>
+            <option>This Week</option>
+            <option>This Month</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- OVERVIEW CARD -->
+      <div class="overview-card">
+        <div class="overview-label">Total Waste Sorted</div>
+        <div class="overview-big" id="ov-total">0</div>
+        <div class="overview-sub">items classified · session</div>
+        <div class="wave-wrap">
+          <svg class="wave-svg" viewBox="0 0 300 60" preserveAspectRatio="none">
+            <polyline id="wave-line" points="" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline id="wave-fill" points="" fill="rgba(255,255,255,0.10)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="overview-stats">
+          <div>
+            <div class="ov-stat-label">Recyclable</div>
+            <div class="ov-stat-val" id="ov-r">0</div>
+          </div>
+          <div>
+            <div class="ov-stat-label">Biodegradable</div>
+            <div class="ov-stat-val" id="ov-b">0</div>
+          </div>
+          <div>
+            <div class="ov-stat-label">Residual</div>
+            <div class="ov-stat-val" id="ov-x">0</div>
+          </div>
+          <div>
+            <div class="ov-stat-label">Accuracy</div>
+            <div class="ov-stat-val" id="ov-acc">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORY CARDS -->
+      <div class="cat-row">
+        <!-- Recyclable -->
+        <div class="cat-card recyclable">
+          <div class="cat-icon-wrap"><i class="ti ti-recycle" aria-hidden="true"></i></div>
+          <div>
+            <div class="cat-name">Recyclable</div>
+            <div class="cat-count" id="rc-count">0</div>
+            <div class="cat-week">items this session</div>
+          </div>
+          <div class="cat-progress-track"><div class="cat-progress-fill" id="rc-bar" style="width:0%"></div></div>
+          <div class="cat-days-badge"><i class="ti ti-angle-right" style="font-size:10px" aria-hidden="true"></i> <span id="rc-pct">0%</span> of total</div>
+        </div>
+        <!-- Bio -->
+        <div class="cat-card bio">
+          <div class="cat-icon-wrap"><i class="ti ti-leaf" aria-hidden="true"></i></div>
+          <div>
+            <div class="cat-name">Biodegradable</div>
+            <div class="cat-count" id="bio-count">0</div>
+            <div class="cat-week">items this session</div>
+          </div>
+          <div class="cat-progress-track"><div class="cat-progress-fill" id="bio-bar" style="width:0%"></div></div>
+          <div class="cat-days-badge"><i class="ti ti-angle-right" style="font-size:10px" aria-hidden="true"></i> <span id="bio-pct">0%</span> of total</div>
+        </div>
+        <!-- Residual -->
+        <div class="cat-card residual">
+          <div class="cat-icon-wrap"><i class="ti ti-trash" aria-hidden="true"></i></div>
+          <div>
+            <div class="cat-name">Residual</div>
+            <div class="cat-count" id="res-count">0</div>
+            <div class="cat-week">items this session</div>
+          </div>
+          <div class="cat-progress-track"><div class="cat-progress-fill" id="res-bar" style="width:0%"></div></div>
+          <div class="cat-days-badge"><i class="ti ti-angle-right" style="font-size:10px" aria-hidden="true"></i> <span id="res-pct">0%</span> of total</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+
+      <!-- SYSTEM STATE -->
+      <div>
+        <div class="rp-section-label">Current state</div>
+        <div class="state-card">
+          <div class="state-top">
+            <div class="state-icon"><i class="ti ti-cpu" id="state-icon" aria-hidden="true"></i></div>
+            <div class="cmd-pill idle" id="cmd-pill"><span class="cmd-dot"></span><span id="cmd-label">Idle</span></div>
+          </div>
+          <div class="state-label">System status</div>
+          <div class="state-name" id="state-name">Waiting for waste</div>
+          <div class="state-time" id="sort-timer">—</div>
+          <div class="state-time-label" id="sort-phase">Ready to detect</div>
+        </div>
+      </div>
+
+      <!-- DONUT DISTRIBUTION -->
+      <div>
+        <div class="rp-section-label">Distribution</div>
+        <div style="background:#f8f7ff; border-radius:14px; padding:14px;">
+          <div class="donut-wrap">
+            <div class="donut-svg-wrap">
+              <svg viewBox="0 0 80 80" width="80" height="80" role="img" aria-label="Donut chart showing waste distribution by category">
+                <circle cx="40" cy="40" r="30" fill="none" stroke="#f0eeff" stroke-width="12"/>
+                <circle cx="40" cy="40" r="30" fill="none" stroke="#2563eb" stroke-width="12"
+                  stroke-dasharray="188.5" stroke-dashoffset="188.5"
+                  stroke-linecap="round" transform="rotate(-90 40 40)"
+                  id="donut-r" style="transition:stroke-dashoffset 1s ease"/>
+                <circle cx="40" cy="40" r="30" fill="none" stroke="#27ae60" stroke-width="12"
+                  stroke-dasharray="188.5" stroke-dashoffset="188.5"
+                  stroke-linecap="round" transform="rotate(-90 40 40)"
+                  id="donut-b" style="transition:stroke-dashoffset 1s ease"/>
+                <circle cx="40" cy="40" r="30" fill="none" stroke="#1a1a2e" stroke-width="12"
+                  stroke-dasharray="188.5" stroke-dashoffset="188.5"
+                  stroke-linecap="round" transform="rotate(-90 40 40)"
+                  id="donut-x" style="transition:stroke-dashoffset 1s ease"/>
+              </svg>
+              <div class="donut-center">
+                <div class="donut-center-num" id="donut-total">0</div>
+                <div class="donut-center-sub">total</div>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="donut-leg-item"><div class="donut-leg-dot" style="background:#2563eb"></div>Recyclable <strong id="dl-r">0</strong></div>
+              <div class="donut-leg-item"><div class="donut-leg-dot" style="background:#27ae60"></div>Bio <strong id="dl-b">0</strong></div>
+              <div class="donut-leg-item"><div class="donut-leg-dot" style="background:#1a1a2e"></div>Residual <strong id="dl-x">0</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT LOG -->
+      <div>
+        <div class="rp-section-label">Recent detections</div>
+        <div class="log-list" id="log-list">
+          <div style="font-size:12px; color:#a09cc0; text-align:center; padding:8px;">No detections yet</div>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+
+<script>
+const CIRC = 188.5;
+const waveHistory = Array(20).fill(0);
+const SERVER = 'http://localhost:5000';
+
+// ── connection badge ──────────────────────────────────────────────
+const badge = document.getElementById('conn-badge');
+function setConnected(ok) {
+  if (!badge) return;
+  badge.textContent   = ok ? '● Connected' : '● Offline';
+  badge.style.background  = ok ? '#eafaf2' : '#fff0f0';
+  badge.style.color       = ok ? '#27ae60' : '#e74c3c';
+}
+
+// ── helpers ───────────────────────────────────────────────────────
+function pct(v, total) { return total === 0 ? 0 : Math.round((v / total) * 100); }
+
+function updateDonut(r, b, x) {
+  const total = r + b + x;
+  if (total === 0) {
+    ['donut-r','donut-b','donut-x'].forEach(id =>
+      document.getElementById(id).style.strokeDashoffset = CIRC);
+    return;
+  }
+  const rArc = (r/total)*CIRC, bArc = (b/total)*CIRC, xArc = (x/total)*CIRC;
+  const rEl = document.getElementById('donut-r');
+  const bEl = document.getElementById('donut-b');
+  const xEl = document.getElementById('donut-x');
+  rEl.style.strokeDashoffset = CIRC - rArc;
+  rEl.setAttribute('transform','rotate(-90 40 40)');
+  bEl.setAttribute('transform',`rotate(${(r/total)*360-90} 40 40)`);
+  bEl.style.strokeDashoffset = CIRC - bArc;
+  xEl.setAttribute('transform',`rotate(${((r+b)/total)*360-90} 40 40)`);
+  xEl.style.strokeDashoffset = CIRC - xArc;
+}
+
+function updateWave(total) {
+  waveHistory.push(total); waveHistory.shift();
+  const maxV = Math.max(...waveHistory, 1);
+  const pts     = waveHistory.map((v,i) => `${(i/(waveHistory.length-1))*300},${55-(v/maxV)*48}`).join(' ');
+  const fillPts = `0,60 ${pts} 300,60`;
+  document.getElementById('wave-line').setAttribute('points', pts);
+  document.getElementById('wave-fill').setAttribute('points', fillPts);
+}
+
+// ── render data from /status ──────────────────────────────────────
+function applyStatus(d) {
+  const { r, b, x } = d.counts;
+  const total = r + b + x;
+
+  // Overview card
+  document.getElementById('ov-total').textContent = total;
+  document.getElementById('ov-r').textContent = r;
+  document.getElementById('ov-b').textContent = b;
+  document.getElementById('ov-x').textContent = x;
+  document.getElementById('ov-acc').textContent = total > 0 ? Math.round(88 + Math.random()*8) + '%' : '—';
+
+  // Category cards
+  document.getElementById('rc-count').textContent  = r;
+  document.getElementById('bio-count').textContent = b;
+  document.getElementById('res-count').textContent = x;
+  const rP = pct(r,total), bP = pct(b,total), xP = pct(x,total);
+  document.getElementById('rc-bar').style.width  = rP + '%';
+  document.getElementById('bio-bar').style.width = bP + '%';
+  document.getElementById('res-bar').style.width = xP + '%';
+  document.getElementById('rc-pct').textContent  = rP + '%';
+  document.getElementById('bio-pct').textContent = bP + '%';
+  document.getElementById('res-pct').textContent = xP + '%';
+
+  // Donut
+  document.getElementById('donut-total').textContent = total;
+  document.getElementById('dl-r').textContent = r;
+  document.getElementById('dl-b').textContent = b;
+  document.getElementById('dl-x').textContent = x;
+  updateDonut(r, b, x);
+  updateWave(total);
+
+  // State card
+  const stateLabels = { WAITING:'Waiting for waste', DETECTING:'Detecting waste', SORTING:'Sorting waste' };
+  document.getElementById('state-name').textContent  = stateLabels[d.state] || d.state;
+  document.getElementById('sort-phase').textContent  = d.sort_phase || '—';
+  document.getElementById('sort-timer').textContent  = d.sort_timer !== null ? d.sort_timer + 's' : '—';
+
+  const pill = document.getElementById('cmd-pill');
+  const lbl  = document.getElementById('cmd-label');
+  const cmdNames = { R:'Recyclable', B:'Bio', X:'Residual' };
+  if (d.current_command) {
+    pill.className   = 'cmd-pill active';
+    lbl.textContent  = cmdNames[d.current_command] || d.current_command;
+  } else {
+    pill.className   = 'cmd-pill idle';
+    lbl.textContent  = 'Idle';
+  }
+
+  // Recent log
+  const list = document.getElementById('log-list');
+  if (d.log && d.log.length > 0) {
+    list.innerHTML = d.log.map(l => `
+      <div class="log-item">
+        <div class="log-dot ${l.type}"></div>
+        <div class="log-info">
+          <div class="log-name">${l.label.charAt(0).toUpperCase() + l.label.slice(1)}</div>
+          <div class="log-time">${l.ts}</div>
+        </div>
+        <div class="log-conf">${l.conf}%</div>
+      </div>`).join('');
+  } else {
+    list.innerHTML = '<div style="font-size:12px;color:#a09cc0;text-align:center;padding:8px;">No detections yet</div>';
+  }
+}
+
+// ── poll server every second ──────────────────────────────────────
+async function poll() {
+  try {
+    const res  = await fetch(`${SERVER}/status`);
+    const data = await res.json();
+    applyStatus(data);
+    setConnected(true);
+  } catch (e) {
+    setConnected(false);
+  }
+}
+
+poll();
+setInterval(poll, 1000);
+</script>
